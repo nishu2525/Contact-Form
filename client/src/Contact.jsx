@@ -3,34 +3,51 @@ import { useState } from "react";
 
 export default function Contact() {
   const [values, setValues] = useState({
-    first_name: "",
-    last_name: "",
-    phone: "",
-    country: "",
-    message: "",
-  });
-  const change=(e)=>{
-    const {name,value}=e.target;
-    setValues({...values,[name]:value})
-  }
-  const handleSubmit =()=>{
-    if(values.first_name ==="" || values.last_name=== "" || values.phone==="" || values.country === "" || values.message === ""){
-      alert("All Feilds Are Required")
-    }else{
-      console.log(values);
-      // setValues({
-      //   first_name: "",
-      //   last_name: "",
-      //   phone: "",
-      //   country: "",
-      //   message: "",
-      // })
+    first_name: '',
+    last_name: '',
+    phone: '',
+    country: '',
+    message: ''
+});
+
+const change = (e) => {
+    setValues({ ...values, [e.target.id]: e.target.value });
+    console.log(values);
+};
+
+const handleSubmit =async(e)=>{
+  e.preventDefault();
+  try {
+    const res =await fetch ('/api/auth/contact',{
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    })
+    const data =await res.json();
+    if(data.success === false){
+      return setErrorMessage(data.message)
     }
+    //  if (res.headers.get('content-type')?.includes('application/json')) {
+    //             const data = await res.json();
+    //             if (!res.ok) {               
+    //                 console.error('Error:', data);
+    //                 return;
+    //             }
+    //             console.log('Success:', data);
+    //         } else {
+                
+    //             const text = await res.text();
+    //             console.error('Response is not JSON:', text);
+    //         }
+  } catch (error) {
+    console.log(error);
   }
+}
+
   return (
     <div className='mt-6'>
       <h1 className='text-3xl font-semibold  ml-12  text-gray-400'>
-        Get in touch{" "}
+        Get in touch
       </h1>
       <div className='flex flex-col justify-center p-3 max-w-lg mx-auto'>
         <div className='flex-auto'>
@@ -41,14 +58,14 @@ export default function Contact() {
             <div>
               <Label className='font-semibold ml-2 tracking-wider text-blue-600'>
                 First Name
-              </Label>
+              </Label >
               <TextInput
                 type='text'
                 placeholder='Enter Your First Name'
                 id='first_name'
                 className='block w-full mt-1 rounded-md'
                 name='first_name'
-                value={values.first_name}
+                 value={values.first_name}
                 onChange={change}
               />
             </div>
@@ -62,7 +79,7 @@ export default function Contact() {
                 id='last_name'
                 className='block w-full mt-1 rounded-md'
                 name='last_name'
-                value={values.last_name}
+               value={values.last_name}
                 onChange={change}
               />
             </div>
@@ -76,7 +93,7 @@ export default function Contact() {
                 id='phone'
                 className='block w-full mt-1  rounded-md'
                 name='phone'
-                value={values.phone}
+               value={values.phone}
                 onChange={change}
               />
             </div>
@@ -103,7 +120,7 @@ export default function Contact() {
                 id='message'
                 className='block w-full mt-1 p-2 border border-gray-300 rounded-md'
                 name='message'
-                value={values.message}
+               value={values.message}
                 onChange={change}
                 rows='4'
               />
